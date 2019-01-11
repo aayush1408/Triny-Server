@@ -1,14 +1,21 @@
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const http = require('http');
+const EventEmitter = require('events');
 const DataModel = require('./models/dataModel');
 
 const app = express();
+const myEmitter = new EventEmitter();
 
-mongoose.Promise = global.Promise;
+
+app.use(cors());
+
 
 const PORT = process.env.PORT || 5000;
+
+mongoose.Promise = global.Promise;
 const mongoUrl = process.env.mongoUrl || `mongodb://localhost/testhooks`;
 mongoose.connect(mongoUrl);
 
@@ -27,17 +34,20 @@ app.use(bodyParser.json());
 
 app.post('/send-details', (req, res) => {
   const data = req.body;
-  const newData = new DataModel(data);
+  const { parameters } = data.result;
+  const newData = new DataModel(parameters);
   newData.save().then(() => {
     res.status(200).send('Success');
+    myEmitter.emit('data stored');
   });
 });
+
 
 app.get('/get-data', (req, res) => {
   DataModel.find({}).then((data) => {
     res.json(data);
-  })
-})
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Server listening on PORT ${PORT}`);
