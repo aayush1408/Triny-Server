@@ -25,15 +25,19 @@ app.use(bodyParser.urlencoded({
 
 app.use(bodyParser.json());
 
-app.post('/get-details', (req, res) => {
+app.post('/send-details', (req, res) => {
   const data = req.body;
   const newData = new DataModel(data);
   newData.save().then(() => {
-    DataModel.find({}).then((data) => {
-      res.json(data);
-    });
+    res.status(200).send('Success');
   });
 });
+
+app.get('/get-data', (req, res) => {
+  DataModel.find({}).then((data) => {
+    res.json(data);
+  })
+})
 
 app.listen(PORT, () => {
   console.log(`Server listening on PORT ${PORT}`);
