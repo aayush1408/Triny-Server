@@ -4,7 +4,7 @@ const DataModel = require('../models/dataModel');
 const router = express.Router();
 
 router.get('/dashboard', (req, res) => {
-  if (req.session.userid && req.cookies.user_sid) {
+  if (req.session.userid) {
     DataModel.find({}).then((data) => {
       res.json(data);
     });

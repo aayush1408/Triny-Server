@@ -3,18 +3,12 @@ const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const User = require('../models/UserModel');
 const router = express.Router();
+const authenticatedMw = require('../middlewares/authentication');
 
-let sessionChecker = (req, res, next) => {
-  if (req.session.userid && req.cookies.user_sid) {
-    res.redirect('/dashboard');
-  } else {
-    next();
-  }
-};
-
-router.get('/login', sessionChecker, (req, res) => {
+router.get('/login', authenticatedMw, (req, res) => {
   res.send('Login page');
 });
+
 
 router.post('/login', (req, res) => {
   let { username, password } = req.body;
@@ -27,7 +21,10 @@ router.post('/login', (req, res) => {
     }
     else {
       req.session.userid = user._id;
-      res.redirect('/dashboard');
+      res.send({
+        message: 'User authenticated',
+        data: user
+      });
     }
   });
 });
