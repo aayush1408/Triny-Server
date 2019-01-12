@@ -6,7 +6,9 @@ router.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');
   } else {
-    res.redirect('/login');
+    res.send({
+      message: 'Unable to logout'
+    })
   }
 });
 

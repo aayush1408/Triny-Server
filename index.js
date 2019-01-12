@@ -8,41 +8,47 @@ const MongoStore = require("connect-mongo")(session);
 //Express instance
 const app = express();
 
-//Handle cors
-app.use(
-  cors({
-    origin: "http://localhost:3000"
-  })
-);
-
-//Body Parser middleware
-app.use(bodyParser.urlencoded({
-  extended: false
-}));
-app.use(bodyParser.json());
-
 // Mongoose configurations
 mongoose.Promise = global.Promise;
 const mongoUrl = process.env.mongoUrl || `mongodb://localhost/testhooks`;
 
-// Mongodb connection
+//  Mongooose connection
 mongoose.connect(mongoUrl);
 const db = mongoose.connection;
-db.once('open', () => {
-  console.log('Connection has been made');
-}).on('error', (error) => {
-  console.log(error);
-});
 
 // initialize express-session to allow us track the logged-in user across sessions.
 app.use(session({
   secret: 'somerandonstuffs',
   resave: true,
-  saveUninitialized: true,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 3 * 60 * 60 * 1000
+  },
   store: new MongoStore({
-    mongooseConnection: db
+    mongooseConnection: db,
   })
 }));
+
+//Handle cors
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true
+  })
+);
+
+//Body Parser middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
+
+// Mongodb connection
+db.once('open', () => {
+  console.log('Connection has been made');
+}).on('error', (error) => {
+  console.log(error);
+});
 
 
 //Handle routes
@@ -60,7 +66,6 @@ app.use('/', loginRoute);
 app.use('/', logoutRoute);
 app.use('/user', userRoute);
 app.use('/user', currentUserRoute);
-
 
 //Port
 const PORT = process.env.PORT || 5000;
