@@ -16,26 +16,29 @@ const mongoUrl = process.env.mongoUrl || `mongodb://localhost/testhooks`;
 mongoose.connect(mongoUrl);
 const db = mongoose.connection;
 
+//Handle cors
+app.use(
+  cors({
+    origin: ['http://localhost:3000'],
+    methods: ['GET', 'POST'],
+    credentials: true
+  })
+);
+
 // initialize express-session to allow us track the logged-in user across sessions.
 app.use(session({
   secret: 'somerandonstuffs',
   resave: true,
-  saveUninitialized: false,
+  saveUninitialized: true,
   cookie: {
-    maxAge: 3 * 60 * 60 * 1000
+    path: '/',
+    httpOnly: false,
+    maxAge: 24 * 60 * 60 * 1000
   },
   store: new MongoStore({
     mongooseConnection: db,
   })
 }));
-
-//Handle cors
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true
-  })
-);
 
 //Body Parser middleware
 app.use(bodyParser.json());

@@ -6,10 +6,6 @@ const User = require('../models/UserModel');
 
 const saltRounds = 10;
 
-router.get('/register', (req, res) => {
-  res.send('Registration page');
-});
-
 router.post('/register', (req, res) => {
   const { fullname, username, password, email } = req.body;
   if (fullname && username && password && email) {
@@ -22,16 +18,25 @@ router.post('/register', (req, res) => {
           email
         });
         newUser.save().then(() => {
-          res.send('Saved Succesfully');
+          res.send({
+            message: 'Saved Successfully',
+            dataSaved: true
+          });
         });
       }
       else {
-        res.send('Error while hashing');
+        res.send({
+          message: 'Error while hashing',
+          dataSaved: false
+        });
       }
     });
   }
   else {
-    res.send('Please enter all the fields');
+    res.status(404).send({
+      message: 'Please enter all the fields',
+      dataSaved: false
+    });
   }
 });
 

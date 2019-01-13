@@ -6,7 +6,9 @@ const router = express.Router();
 const authenticatedMw = require('../middlewares/authentication');
 
 router.get('/login', authenticatedMw, (req, res) => {
-  res.send('Login page');
+  res.send({
+    message: 'Login page'
+  });
 });
 
 
@@ -14,10 +16,14 @@ router.post('/login', (req, res) => {
   let { username, password } = req.body;
   User.findOne({ username }).then(function (user) {
     if (!user) {
-      res.redirect('/login');
+      res.send({
+        message: 'Incorrect username'
+      });
     }
     else if (!(bcrypt.compareSync(password, user.password))) {
-      res.redirect('/login');
+      res.send({
+        message: 'Incorrect password'
+      });
     }
     else {
       req.session.userid = user._id;
