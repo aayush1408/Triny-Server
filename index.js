@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require("connect-mongo")(session);
-
+const path = require("path");
 //Express instance
 const app = express();
 
@@ -19,7 +19,7 @@ const db = mongoose.connection;
 //Handle cors
 app.use(
   cors({
-    origin: ['http://localhost:3000'],
+    origin: ['http://localhost:3000', 'http://triny-dashboard.surge.sh'],
     methods: ['GET', 'POST'],
     credentials: true
   })
@@ -62,6 +62,7 @@ const logoutRoute = require('./routes/logout');
 const userRoute = require('./routes/user');
 const currentUserRoute = require('./routes/currentUser');
 
+
 // Middleware route handler
 app.use('/', hookRoute);
 app.use('/', dashboardRoute);
@@ -69,6 +70,15 @@ app.use('/', loginRoute);
 app.use('/', logoutRoute);
 app.use('/user', userRoute);
 app.use('/user', currentUserRoute);
+
+app.get('/*', function (req, res) {
+  console.log(path.join(__dirname, '../dashboard/public/index.html'));
+  res.sendFile(path.join(__dirname, '../dashboard/public/index.html'), function (err) {
+    if (err) {
+      res.status(500).send(err)
+    }
+  })
+});
 
 //Port
 const PORT = process.env.PORT || 5000;

@@ -5,12 +5,6 @@ const User = require('../models/UserModel');
 const router = express.Router();
 const authenticatedMw = require('../middlewares/authentication');
 
-router.get('/login', authenticatedMw, (req, res) => {
-  res.send({
-    message: 'Login page'
-  });
-});
-
 
 router.post('/login', (req, res) => {
   let { username, password } = req.body;
