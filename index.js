@@ -19,7 +19,7 @@ const db = mongoose.connection;
 //Handle cors
 app.use(
   cors({
-    origin: ['http://localhost:3000', 'https://triny-dashboard.surge.sh'],
+    origin: true,
     methods: ['GET', 'POST'],
     credentials: true
   })
