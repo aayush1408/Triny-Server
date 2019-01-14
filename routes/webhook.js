@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.post('/send-details', (req, res) => {
   const data = req.body;
+  // Use this when in prod
   // const { parameters } = data.result;
   const newData = new DataModel(data);
   newData.save().then(() => {

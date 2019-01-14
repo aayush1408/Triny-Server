@@ -33,7 +33,7 @@ router.post('/register', (req, res) => {
     });
   }
   else {
-    res.status(404).send({
+    res.send({
       message: 'Please enter all the fields',
       dataSaved: false
     });

@@ -71,15 +71,6 @@ app.use('/', logoutRoute);
 app.use('/user', userRoute);
 app.use('/user', currentUserRoute);
 
-app.get('/*', function (req, res) {
-  console.log(path.join(__dirname, '../dashboard/public/index.html'));
-  res.sendFile(path.join(__dirname, '../dashboard/public/index.html'), function (err) {
-    if (err) {
-      res.status(500).send(err)
-    }
-  })
-});
-
 //Port
 const PORT = process.env.PORT || 5000;
 
